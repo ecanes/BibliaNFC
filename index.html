@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llavero Bíblico - Encuentra Esperanza</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .section {
+            margin: 40px 0;
+            padding: 25px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        .section-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .temas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .tema-btn {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .tema-btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .video-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .option-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .option-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .option-btn.versiculos {
+            background-color: #27ae60;
+        }
+        .option-btn.versiculos:hover {
+            background-color: #219a52;
+        }
+        .logo {
+            max-width: 180px;
+            margin-bottom: 10px;
+        }
+        .bible-verse {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #9b59b6;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.bible.com/images/bible_logo_green.png" alt="YouVersion Logo" class="logo">
+        
+        <h1>Llavero Bíblico</h1>
+        <p class="subtitle">Encuentra esperanza y dirección en la Palabra de Dios</p>
+        
+        <div class="bible-verse">
+            "Tu palabra es una lámpara a mis pies y una luz en mi camino" - Salmos 119:105
+        </div>
+
+        <!-- Sección de Versículos -->
+        <div class="section">
+            <div class="section-title">📖 Encuentra Versículos por Tema</div>
+            <p>Selecciona un tema para descubrir versículos que hablen a tu situación:</p>
+            
+            <div class="temas-grid">
+                <button class="tema-btn" onclick="seleccionarTema('fe')">Fe</button>
+                <button class="tema-btn" onclick="seleccionarTema('paz')">Paz</button>
+                <button class="tema-btn" onclick="seleccionarTema('esperanza')">Esperanza</button>
+                <button class="tema-btn" onclick="seleccionarTema('sanidad')">Sanidad</button>
+                <button class="tema-btn" onclick="seleccionarTema('consuelo')">Consuelo</button>
+                <button class="tema-btn" onclick="seleccionarTema('ansiedad')">Ansiedad</button>
+                <button class="tema-btn" onclick="seleccionarTema('gratitud')">Gratitud</button>
+                <button class="tema-btn" onclick="seleccionarTema('amor')">Amor</button>
+                <button class="tema-btn" onclick="seleccionarTema('fortaleza')">Fortaleza</button>
+            </div>
+        </div>
+
+        <!-- Sección de Videos -->
+        <div class="section">
+            <div class="section-title">🎬 Explora Videos Bíblicos</div>
+            <p>Contenido visual para profundizar en tu fe:</p>
+            
+            <div class="video-options">
+                <button class="option-btn" onclick="verTodosLosVideos()">
+                    📺 Ver Todas las Series de Videos
+                </button>
+                <button class="option-btn" onclick="videoAleatorio()">
+                    🎲 Video Aleatorio - ¡Sorpréndeme!
+                </button>
+            </div>
+        </div>
+
+        <!-- Sección de Búsqueda Directa -->
+        <div class="section">
+            <div class="section-title">🔍 Búsqueda Directa en YouVersion</div>
+            <p>Encuentra exactamente lo que necesitas:</p>
+            <button class="option-btn versiculos" onclick="abrirYouVersion()">
+                🌐 Abrir YouVersion
+            </button>
+        </div>
+
+        <div class="footer">
+            Escanea este llavero cuando necesites dirección espiritual
+        </div>
+    </div>
+
+    <script>
+        // Recursos organizados por tema - Versículos específicos
+        const recursos = {
+            fe: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/HEB.11.1.NTV",
+                    "https://www.bible.com/bible/55/MRK.11.22.NTV",
+                    "https://www.bible.com/bible/55/2CO.5.7.NTV"
+                ]
+            },
+            paz: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/JHN.14.27.NTV",
+                    "https://www.bible.com/bible/55/PHI.4.7.NTV",
+                    "https://www.bible.com/bible/55/ISA.26.3.NTV"
+                ]
+            },
+            esperanza: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/ROM.15.13.NTV",
+                    "https://www.bible.com/bible/55/JER.29.11.NTV",
+                    "https://www.bible.com/bible/55/PSA.71.5.NTV"
+                ]
+            },
+            sanidad: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/PSA.147.3.NTV",
+                    "https://www.bible.com/bible/55/1PE.2.24.NTV",
+                    "https://www.bible.com/bible/55/JER.17.14.NTV"
+                ]
+            },
+            consuelo: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/2CO.1.3.NTV",
+                    "https://www.bible.com/bible/55/PSA.34.18.NTV",
+                    "https://www.bible.com/bible/55/MAT.5.4.NTV"
+                ]
+            },
+            ansiedad: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/PHI.4.6.NTV",
+                    "https://www.bible.com/bible/55/1PE.5.7.NTV",
+                    "https://www.bible.com/bible/55/PSA.94.19.NTV"
+                ]
+            },
+            gratitud: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/1TH.5.18.NTV",
+                    "https://www.bible.com/bible/55/COL.3.15.NTV",
+                    "https://www.bible.com/bible/55/PSA.100.4.NTV"
+                ]
+            },
+            amor: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/1CO.13.4.NTV",
+                    "https://www.bible.com/bible/55/JHN.3.16.NTV",
+                    "https://www.bible.com/bible/55/1JN.4.8.NTV"
+                ]
+            },
+            fortaleza: {
+                versiculos: [
+                    "https://www.bible.com/bible/55/ISA.40.31.NTV",
+                    "https://www.bible.com/bible/55/PHI.4.13.NTV",
+                    "https://www.bible.com/bible/55/PSA.46.1.NTV"
+                ]
+            }
+        };
+
+        // Lista de series de videos populares
+        const seriesVideos = [
+            "https://www.bible.com/es/videos/collections/2-serie-de-la-tora",
+            "https://www.bible.com/es/videos/collections/3-los-milagros-de-jesus",
+            "https://www.bible.com/es/videos/collections/4-historias-del-antiguo-testamento",
+            "https://www.bible.com/es/videos/collections/5-la-paz-de-dios",
+            "https://www.bible.com/es/videos/collections/6-el-amor-de-dios",
+            "https://www.bible.com/es/videos/collections/7-la-fe-en-accion",
+            "https://www.bible.com/es/videos/collections/8-una-vida-de-gratitud",
+            "https://www.bible.com/es/videos/collections/9-sanidad-divina",
+            "https://www.bible.com/es/videos/collections/10-esperanza-en-tiempos-dificiles",
+            "https://www.bible.com/es/videos/collections/11-venciendo-la-ansiedad"
+        ];
+
+        // Función para seleccionar tema y redirigir a versículo aleatorio
+        function seleccionarTema(tema) {
+            if (recursos[tema] && recursos[tema].versiculos.length > 0) {
+                const randomVersiculo = recursos[tema].versiculos[
+                    Math.floor(Math.random() * recursos[tema].versiculos.length)
+                ];
+                window.location.href = randomVersiculo;
+            } else {
+                window.location.href = `https://www.bible.com/search?q=${tema}`;
+            }
+        }
+
+        // Función para ver todos los videos disponibles
+        function verTodosLosVideos() {
+            window.location.href = "https://www.bible.com/es/videos";
+        }
+
+        // Función para video aleatorio
+        function videoAleatorio() {
+            const randomVideo = seriesVideos[Math.floor(Math.random() * seriesVideos.length)];
+            window.location.href = randomVideo;
+        }
+
+        // Función para abrir YouVersion directamente
+        function abrirYouVersion() {
+            window.location.href = "https://www.bible.com/es";
+        }
+    </script>
+</body>
+</html>
