@@ -177,12 +177,11 @@
             <label>📖 Versión de la Biblia:</label>
             <select id="versionSelect">
                 <option value="55">NTV - Nueva Traducción Viviente (Español)</option>
+                <option value="111">NVI - Nueva Versión Internacional (Español)</option>
                 <option value="149">RVR1960 - Reina Valera 1960 (Español)</option>
                 <option value="153">RVR1995 - Reina Valera 1995 (Español)</option>
                 <option value="148">DHH - Dios Habla Hoy (Español)</option>
                 <option value="1">KJV - King James Version (Inglés)</option>
-                <option value="111">NIV - New International Version (Inglés)</option>
-                <option value="116">NLT - New Living Translation (Inglés)</option>
                 <option value="59">ESV - English Standard Version (Inglés)</option>
             </select>
         </div>
@@ -204,12 +203,12 @@
             </div>
         </div>
 
-        <!-- Videos (siempre en web móvil) -->
+        <!-- Videos (versión estable) -->
         <div class="section">
             <div class="section-title">🎬 Videos Bíblicos</div>
             <p>Contenido visual para profundizar en tu fe:</p>
             <div class="video-options">
-                <button class="option-btn" id="verTodosVideos">📺 Ver todas las series</button>
+                <button class="option-btn" id="verTodosVideos">📺 Ver todos los videos</button>
                 <button class="option-btn" id="videoAleatorio">🎲 Video aleatorio — ¡Sorpréndeme!</button>
             </div>
         </div>
@@ -228,7 +227,7 @@
 
     <script>
         // ============================================
-        // VERSÍCULOS (solo las referencias, sin versión fija)
+        // VERSÍCULOS (solo referencias, sin sufijo)
         // ============================================
         const versiculosPorTema = {
             fe: [
@@ -279,27 +278,25 @@
         };
 
         // ============================================
-        // VIDEOS (siempre web con m.bible.com)
+        // VIDEOS - URLs ESTABLES (búsquedas en lugar de colecciones directas)
         // ============================================
-        const seriesVideosWeb = [
-            "https://m.bible.com/es/videos/collections/2-serie-de-la-tora",
-            "https://m.bible.com/es/videos/collections/3-los-milagros-de-jesus",
-            "https://m.bible.com/es/videos/collections/4-historias-del-antiguo-testamento",
-            "https://m.bible.com/es/videos/collections/5-la-paz-de-dios",
-            "https://m.bible.com/es/videos/collections/6-el-amor-de-dios",
-            "https://m.bible.com/es/videos/collections/7-la-fe-en-accion",
-            "https://m.bible.com/es/videos/collections/8-una-vida-de-gratitud",
-            "https://m.bible.com/es/videos/collections/9-sanidad-divina",
-            "https://m.bible.com/es/videos/collections/10-esperanza-en-tiempos-dificiles",
-            "https://m.bible.com/es/videos/collections/11-venciendo-la-ansiedad"
+        // Lista de palabras clave para búsquedas de video
+        const temasVideos = [
+            "fe",
+            "paz", 
+            "esperanza",
+            "amor",
+            "gratitud",
+            "sabiduría",
+            "oración",
+            "alabanza"
         ];
 
         // ============================================
         // VERSIÓN SELECCIONADA (guardar preferencia)
         // ============================================
-        let versionId = localStorage.getItem('bibleVersion') || '55'; // NTV por defecto
+        let versionId = localStorage.getItem('bibleVersion') || '55';
 
-        // Elemento del selector
         const versionSelect = document.getElementById('versionSelect');
         if (versionSelect) {
             versionSelect.value = versionId;
@@ -310,11 +307,12 @@
         }
 
         // ============================================
-        // FUNCIÓN PARA ABRIR VERSÍCULO (con versión seleccionada)
+        // FUNCIÓN PARA ABRIR VERSÍCULO (SIN sufijo .NTV)
         // ============================================
         function abrirVersiculo(referencia) {
-            const appUrl = `youversion://bible?reference=${referencia}&version=${versionId}`;
+            // URL sin sufijo - SOLO el ID y la referencia
             const webUrl = `https://www.bible.com/bible/${versionId}/${referencia}`;
+            const appUrl = `youversion://bible?reference=${referencia}&version=${versionId}`;
 
             // Intentar deep link con iframe
             const iframe = document.createElement('iframe');
@@ -343,19 +341,25 @@
         }
 
         // ============================================
-        // FUNCIONES PARA VIDEOS Y BÚSQUEDA
+        // FUNCIONES PARA VIDEOS (VERSIÓN ESTABLE)
         // ============================================
         function verTodosVideos() {
-            window.location.href = "https://m.bible.com/es/videos";
+            // Usar la página principal de videos de YouVersion (más estable)
+            window.location.href = "https://www.bible.com/es/videos";
         }
 
         function videoAleatorio() {
-            const randomUrl = seriesVideosWeb[Math.floor(Math.random() * seriesVideosWeb.length)];
-            window.location.href = randomUrl;
+            // Seleccionar un tema aleatorio y buscar videos relacionados
+            const temaAleatorio = temasVideos[Math.floor(Math.random() * temasVideos.length)];
+            // Usar búsqueda de videos en lugar de colecciones directas
+            window.location.href = `https://www.bible.com/es/videos?q=${encodeURIComponent(temaAleatorio)}`;
         }
 
+        // ============================================
+        // FUNCIÓN PARA ABRIR YOUVERSION
+        // ============================================
         function abrirYouVersion() {
-            const appUrl = `youversion://`;
+            const appUrl = "youversion://";
             const webUrl = "https://www.bible.com/es";
 
             const iframe = document.createElement('iframe');
