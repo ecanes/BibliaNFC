@@ -1,397 +1,326 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Llavero Bíblico - Encuentra Esperanza</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 16px;
-            margin: 0;
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            max-width: 650px;
-            margin: 16px auto;
-            padding: 24px 20px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-            font-size: 1.8rem;
-        }
-        .subtitle {
-            color: #7f8c8d;
-            margin-bottom: 24px;
-            font-size: 1rem;
-        }
-        .section {
-            margin: 32px 0;
-            padding: 20px 16px;
-            border-radius: 16px;
-            background: #f8f9fa;
-        }
-        .section-title {
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 16px;
-            font-weight: bold;
-        }
-        .temas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .tema-btn {
-            background-color: #9b59b6;
-            color: white;
-            border: none;
-            padding: 14px 8px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .tema-btn:active {
-            transform: scale(0.97);
-        }
-        .video-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .option-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-        .option-btn:active {
-            transform: scale(0.98);
-        }
-        .option-btn.versiculos {
-            background-color: #27ae60;
-        }
-        .logo {
-            max-width: 140px;
-            margin-bottom: 12px;
-        }
-        .bible-verse {
-            font-style: italic;
-            color: #5d6d7e;
-            margin: 20px 0;
-            padding: 12px;
-            background: #f0f2f5;
-            border-radius: 12px;
-            border-left: 4px solid #9b59b6;
-            font-size: 0.95rem;
-        }
-        .footer {
-            margin-top: 24px;
-            color: #7f8c8d;
-            font-size: 0.8rem;
-        }
-        .version-selector {
-            margin: 20px 0;
-            padding: 12px;
-            background: #e8f0fe;
-            border-radius: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .version-selector label {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .version-selector select {
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid #9b59b6;
-            background: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        button {
-            touch-action: manipulation;
-        }
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px 16px;
-            }
-            .section {
-                padding: 16px 12px;
-            }
-            .tema-btn {
-                padding: 12px 6px;
-                font-size: 0.9rem;
-            }
-            .option-btn {
-                padding: 14px 16px;
-                font-size: 1rem;
-            }
-            .version-selector {
-                gap: 8px;
-            }
-            .version-selector select {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICHTHYS - Llavero Bíblico</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #f1f5f9; color: #1e293b; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    .card { background: white; padding: 24px; border-radius: 20px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
+    .logo { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: 2px; }
+    .sub { color: #64748b; font-size: 14px; margin-bottom: 20px; }
+    
+    .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+    label { font-size: 14px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
+    select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 15px; background: white; cursor: pointer; }
+    
+    /* CAJA DEL DEVOCIONAL / VERSÍCULO DEL DÍA */
+    .caja-versiculo { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; border-radius: 0 8px 8px 0; margin-top: 5px; }
+    .texto { font-style: italic; font-size: 15px; color: #334155; margin-bottom: 8px; line-height: 1.4; }
+    .cita { font-weight: bold; text-align: right; color: #1e293b; font-size: 13px; margin-bottom: 8px; }
+    .reflexion { font-size: 13.5px; color: #475569; border-top: 1px dashed #fcd34d; padding-top: 8px; line-height: 1.35; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .temas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    
+    .btn { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none; display: block; text-align: center; font-size: 14px; }
+    .btn-green { background: #16a34a; }
+    .btn-purple { background: #9333ea; }
+    .btn-orange { background: #ea580c; }
+    .btn-yv { background: #1e293b; color: #f8fafc; font-size: 13px; margin-top: 10px; border: 1px solid #334155; }
+    .btn-tema { background: #8b5cf6; padding: 10px 5px; font-size: 13px; }
+    .btn:active { transform: scale(0.98); }
+
+    /* SECCIÓN DE CRÉDITOS */
+    .footer-credits { margin-top: 20px; font-size: 11px; color: #94a3b8; line-height: 1.4; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 15px; }
+    .footer-credits a { color: #64748b; text-decoration: underline; }
+
+    /* ESTILOS DEL FOOTER GLOBAL */
+    footer { width: 100%; max-width: 450px; border-radius: 16px; margin-top: 25px; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="https://www.bible.com/images/bible_logo_green.png" alt="YouVersion Logo" class="logo">
-        
-        <h1>Llavero Bíblico</h1>
-        <p class="subtitle">Encuentra esperanza y dirección en la Palabra de Dios</p>
-        
-        <div class="bible-verse">
-            "Tu palabra es una lámpara a mis pies y una luz en mi camino" — Salmos 119:105
-        </div>
 
-        <!-- SELECTOR DE VERSIÓN DE LA BIBLIA -->
-        <div class="version-selector">
-            <label>📖 Versión de la Biblia:</label>
-            <select id="versionSelect">
-                <option value="55">NTV - Nueva Traducción Viviente (Español)</option>
-                <option value="111">NVI - Nueva Versión Internacional (Español)</option>
-                <option value="149">RVR1960 - Reina Valera 1960 (Español)</option>
-                <option value="153">RVR1995 - Reina Valera 1995 (Español)</option>
-                <option value="148">DHH - Dios Habla Hoy (Español)</option>
-                <option value="1">KJV - King James Version (Inglés)</option>
-                <option value="59">ESV - English Standard Version (Inglés)</option>
-            </select>
-        </div>
+  <div class="card">
+    <div class="logo">ICHTHYS</div>
+    <div class="sub">Llavero Bíblico Inteligente</div>
 
-        <!-- Versículos por Tema -->
-        <div class="section">
-            <div class="section-title">📖 Versículos por Tema</div>
-            <p>Selecciona un tema para descubrir versículos que hablen a tu situación:</p>
-            <div class="temas-grid">
-                <button class="tema-btn" data-tema="fe">Fe</button>
-                <button class="tema-btn" data-tema="paz">Paz</button>
-                <button class="tema-btn" data-tema="esperanza">Esperanza</button>
-                <button class="tema-btn" data-tema="sanidad">Sanidad</button>
-                <button class="tema-btn" data-tema="consuelo">Consuelo</button>
-                <button class="tema-btn" data-tema="ansiedad">Ansiedad</button>
-                <button class="tema-btn" data-tema="gratitud">Gratitud</button>
-                <button class="tema-btn" data-tema="amor">Amor</button>
-                <button class="tema-btn" data-tema="fortaleza">Fortaleza</button>
-            </div>
-        </div>
+    <!-- CONFIGURACIÓN DE VERSIÓN Y VERSÍCULO EN PANTALLA -->
+    <div class="box">
+      <label for="version">1. Selecciona tu Versión:</label>
+      <select id="version" onchange="actualizarTextoEnPantalla()">
+         <option value="ntv">NTV - Nueva Traducción Viviente</option>
+         <option value="nvi">NVI - Nueva Versión Internacional</option>
+         <option value="rvr" selected>RVR1960 - Reina Valera 1960</option>
+         <option value="dhh">DHH - Dios Habla Hoy (Católica)</option>
+         <option value="bhti">BHTI - Biblia Hispanoamericana (Católica)</option>
+         <option value="tla">TLA - Traducción en Lenguaje Actual</option>
+      </select>
 
-        <!-- Videos (versión estable) -->
-        <div class="section">
-            <div class="section-title">🎬 Videos Bíblicos</div>
-            <p>Contenido visual para profundizar en tu fe:</p>
-            <div class="video-options">
-                <button class="option-btn" id="verTodosVideos">📺 Ver todos los videos</button>
-                <button class="option-btn" id="videoAleatorio">🎲 Video aleatorio — ¡Sorpréndeme!</button>
-            </div>
+      <div style="margin-top: 15px;">
+        <label>☀️ Versículo y Reflexión del Día:</label>
+        <div class="caja-versiculo">
+          <div id="texto-versiculo" class="texto">Cargando versículo...</div>
+          <div id="cita-biblica" class="cita"></div>
+          <div id="texto-reflexion" class="reflexion"></div>
         </div>
-
-        <!-- Búsqueda directa -->
-        <div class="section">
-            <div class="section-title">🔍 Búsqueda en YouVersion</div>
-            <p>Encuentra exactamente lo que necesitas:</p>
-            <button class="option-btn versiculos" id="abrirYouVersion">🌐 Abrir YouVersion</button>
-        </div>
-
-        <div class="footer">
-            Escanea este llavero cuando necesites dirección espiritual
-        </div>
+      </div>
     </div>
 
-    <script>
-        // ============================================
-        // VERSÍCULOS (solo referencias, sin sufijo)
-        // ============================================
-        const versiculosPorTema = {
-            fe: [
-                "HEB.11.1",
-                "MRK.11.22",
-                "2CO.5.7"
-            ],
-            paz: [
-                "JHN.14.27",
-                "PHI.4.7",
-                "ISA.26.3"
-            ],
-            esperanza: [
-                "ROM.15.13",
-                "JER.29.11",
-                "PSA.71.5"
-            ],
-            sanidad: [
-                "PSA.147.3",
-                "1PE.2.24",
-                "JER.17.14"
-            ],
-            consuelo: [
-                "2CO.1.3",
-                "PSA.34.18",
-                "MAT.5.4"
-            ],
-            ansiedad: [
-                "PHI.4.6",
-                "1PE.5.7",
-                "PSA.94.19"
-            ],
-            gratitud: [
-                "1TH.5.18",
-                "COL.3.15",
-                "PSA.100.4"
-            ],
-            amor: [
-                "1CO.13.4",
-                "JHN.3.16",
-                "1JN.4.8"
-            ],
-            fortaleza: [
-                "ISA.40.31",
-                "PHI.4.13",
-                "PSA.46.1"
-            ]
-        };
+    <!-- VERSÍCULOS POR TEMA -->
+    <div class="box">
+      <label>2. Explora por Tema:</label>
+      <div class="temas-grid">
+        <button class="btn btn-tema" onclick="abrirTema('fe')">Fe</button>
+        <button class="btn btn-tema" onclick="abrirTema('paz')">Paz</button>
+        <button class="btn btn-tema" onclick="abrirTema('esperanza')">Esperanza</button>
+        <button class="btn btn-tema" onclick="abrirTema('sanidad')">Sanidad</button>
+        <button class="btn btn-tema" onclick="abrirTema('consuelo')">Consuelo</button>
+        <button class="btn btn-tema" onclick="abrirTema('ansiedad')">Ansiedad</button>
+        <button class="btn btn-tema" onclick="abrirTema('gratitud')">Gratitud</button>
+        <button class="btn btn-tema" onclick="abrirTema('amor')">Amor</button>
+        <button class="btn btn-tema" onclick="abrirTema('fortaleza')">Fortaleza</button>
+      </div>
+    </div>
 
-        // ============================================
-        // VIDEOS - URLs ESTABLES (búsquedas en lugar de colecciones directas)
-        // ============================================
-        // Lista de palabras clave para búsquedas de video
-        const temasVideos = [
-            "fe",
-            "paz", 
-            "esperanza",
-            "amor",
-            "gratitud",
-            "sabiduría",
-            "oración",
-            "alabanza"
-        ];
+    <!-- NAVEGACIÓN EN YOUVERSION -->
+    <div class="box">
+      <label>3. Explorar en YouVersion:</label>
+      
+      <button class="btn btn-green" onclick="capituloAleatorio()" style="width: 100%; margin-bottom: 10px;">
+        📖 Capítulo Aleatorio
+      </button>
 
-        // ============================================
-        // VERSIÓN SELECCIONADA (guardar preferencia)
-        // ============================================
-        let versionId = localStorage.getItem('bibleVersion') || '55';
+      <div class="grid">
+        <button class="btn btn-purple" onclick="abrirPlanes()">
+          📋 Planes
+        </button>
+        <button class="btn btn-orange" onclick="abrirVideos()">
+          🎬 Videos
+        </button>
+      </div>
 
-        const versionSelect = document.getElementById('versionSelect');
-        if (versionSelect) {
-            versionSelect.value = versionId;
-            versionSelect.addEventListener('change', function() {
-                versionId = this.value;
-                localStorage.setItem('bibleVersion', versionId);
-            });
+      <!-- BOTÓN DIRECTO A YOUVERSION -->
+      <button class="btn btn-yv" onclick="abrirYouVersion()" style="width: 100%;">
+        📱 Abrir la App / Web de YouVersion
+      </button>
+    </div>
+
+    <!-- PIE DE PÁGINA / DERECHOS -->
+    <div class="footer-credits">
+      Contenidos y textos bíblicos facilitados mediante enlace a <a href="https://www.bible.com" target="_blank" rel="noopener">YouVersion (Bible.com)</a>.<br>
+      Todos los derechos del texto bíblico pertenecen a sus respectivas sociedades bíblicas y editoriales.
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA LIMPIO CON MODAL DE APOYO -->
+  <footer style="text-align: center; padding: 20px 15px; background: #ffffff; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+    <p style="color: #666; font-size: 0.9em; margin-bottom: 12px; margin-top: 0;">
+      Este proyecto es de código abierto y sin fines de lucro.
+    </p>
+    <button onclick="abrirModalApoyo()" style="background-color: #2b2b2b; color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 14px;">
+      🤝 Apóyanos
+    </button>
+  </footer>
+
+  <!-- VENTANA MODAL DE APOYO -->
+  <div id="modalApoyo" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index: 1000;">
+    <div style="background:#fff; padding:25px; border-radius:15px; max-width:320px; width:90%; text-align:center; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <span onclick="cerrarModalApoyo()" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:1.2em; font-weight:bold; color: #64748b;">✕</span>
+      
+      <h3 style="margin-top:0; color:#1e293b;">Elige cómo colaborar</h3>
+      <p style="font-size:0.85em; color:#555; margin-bottom: 15px;">Tu ayuda mantiene vivo y libre este proyecto.</p>
+
+      <a href="https://ko-fi.com/TU_USUARIO" target="_blank" style="display:block; margin:10px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">
+        ☕ Invítanos a un café (€ / USD)
+      </a>
+
+      <a href="https://cults3d.com/es/usuarios/TU_USUARIO" target="_blank" style="display:block; margin:10px 0; padding:10px; background:#8A2BE2; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">
+        🖨️ Imprime tu propio llavero (Cults3D)
+      </a>
+
+      <button onclick="mostrarQRColombia()" style="width:100%; margin:10px 0; padding:10px; background:#00C853; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;">
+        🇨🇴 Apoyar desde Colombia (COP)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ENLACE DEL CSV PUBLICADO EN GOOGLE SHEETS
+    // =========================================================
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdM1leBIfF5O8UToUxYwvwbIYkKY8gNGvfI05yA0AHEZlpj-40wLU_mWIG-4Gzd9rfRrzsATs2Zph0/pub?output=csv';
+
+    // Mapeo de claves locales hacia IDs numéricos oficiales de YouVersion
+    const MAPEO_YOUVERSION = {
+      ntv: "127",
+      nvi: "128",
+      rvr: "149",
+      dhh: "148",
+      bhti: "222",
+      tla: "176"
+    };
+
+    // Respaldo local por si no hay conexión o falla el enlace de Sheets
+    const RESPALDO_LOCAL = {
+      cita: "Filipenses 4:13",
+      ntv: "Pues todo lo puedo hacer por medio de Cristo, quien me da las fuerzas.",
+      nvi: "Todo lo puedo en Cristo que me da fortaleza.",
+      rvr: "Todo lo puedo en Cristo que me fortalece.",
+      dhh: "A todo puedo hacerle frente, gracias a Cristo que me fortalece.",
+      bhti: "A todo puedo hacerle frente gracias a aquel que me fortalece.",
+      tla: "Cristo me da fuerzas para enfrentarme a toda clase de situaciones.",
+      reflexion: "Confía en que Dios te da las fuerzas necesarias para superar cualquier reto hoy."
+    };
+
+    let devocionalHoyGlobal = null;
+
+    function parsearLineaCSV(linea) {
+      const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*)/g;
+      const columnas = [];
+      let match;
+      while ((match = regex.exec(linea)) !== null) {
+        let val = match[1];
+        if (val.startsWith('"') && val.endsWith('"')) {
+          val = val.substring(1, val.length - 1).replace(/""/g, '"');
+        }
+        columnas.push(val.trim());
+      }
+      return columnas;
+    }
+
+    async function cargarDevocionalDelDia() {
+      try {
+        if (!SHEET_CSV_URL) {
+          throw new Error("URL de Google Sheets no configurada.");
         }
 
-        // ============================================
-        // FUNCIÓN PARA ABRIR VERSÍCULO (SIN sufijo .NTV)
-        // ============================================
-        function abrirVersiculo(referencia) {
-            // URL sin sufijo - SOLO el ID y la referencia
-            const webUrl = `https://www.bible.com/bible/${versionId}/${referencia}`;
-            const appUrl = `youversion://bible?reference=${referencia}&version=${versionId}`;
-
-            // Intentar deep link con iframe
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appUrl;
-            document.body.appendChild(iframe);
-
-            let timeoutId = setTimeout(function() {
-                window.location.href = webUrl;
-            }, 500);
-
-            window.addEventListener('blur', function onBlur() {
-                clearTimeout(timeoutId);
-                window.removeEventListener('blur', onBlur);
-            });
-        }
-
-        function seleccionarTema(tema) {
-            const referencias = versiculosPorTema[tema];
-            if (referencias && referencias.length) {
-                const randomRef = referencias[Math.floor(Math.random() * referencias.length)];
-                abrirVersiculo(randomRef);
-            } else {
-                window.location.href = `https://www.bible.com/search/bible?q=${encodeURIComponent(tema)}&version=${versionId}`;
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA VIDEOS (VERSIÓN ESTABLE)
-        // ============================================
-        function verTodosVideos() {
-            // Usar la página principal de videos de YouVersion (más estable)
-            window.location.href = "https://www.bible.com/es/videos";
-        }
-
-        function videoAleatorio() {
-            // Seleccionar un tema aleatorio y buscar videos relacionados
-            const temaAleatorio = temasVideos[Math.floor(Math.random() * temasVideos.length)];
-            // Usar búsqueda de videos en lugar de colecciones directas
-            window.location.href = `https://www.bible.com/es/videos?q=${encodeURIComponent(temaAleatorio)}`;
-        }
-
-        // ============================================
-        // FUNCIÓN PARA ABRIR YOUVERSION
-        // ============================================
-        function abrirYouVersion() {
-            const appUrl = "youversion://";
-            const webUrl = "https://www.bible.com/es";
-
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appUrl;
-            document.body.appendChild(iframe);
-
-            let timeoutId = setTimeout(function() {
-                window.location.href = webUrl;
-            }, 500);
-
-            window.addEventListener('blur', function onBlur() {
-                clearTimeout(timeoutId);
-                window.removeEventListener('blur', onBlur);
-            });
-        }
-
-        // ============================================
-        // EVENTOS
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.tema-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tema = btn.getAttribute('data-tema');
-                    seleccionarTema(tema);
-                });
-            });
-
-            document.getElementById('verTodosVideos').addEventListener('click', verTodosVideos);
-            document.getElementById('videoAleatorio').addEventListener('click', videoAleatorio);
-            document.getElementById('abrirYouVersion').addEventListener('click', abrirYouVersion);
+        const response = await fetch(SHEET_CSV_URL);
+        const data = await response.text();
+        
+        const filas = data.split('\n').filter(f => f.trim() !== '').slice(1);
+        const devocionales = filas.map(fila => {
+          const col = parsearLineaCSV(fila);
+          return {
+            id: col[0] || '',
+            cita: col[1] || '',
+            ntv: col[2] || '',
+            nvi: col[3] || '',
+            rvr: col[4] || '',
+            dhh: col[5] || '',
+            bhti: col[6] || '',
+            tla: col[7] || '',
+            reflexion: col[8] || ''
+          };
         });
-    </script>
+
+        if (devocionales.length === 0) throw new Error("Sin datos en la hoja");
+
+        // Cálculo del día actual del año (Ej. 244 para el 1 de septiembre)
+        const hoy = new Date();
+        const inicioDeAno = new Date(hoy.getFullYear(), 0, 0);
+        const dif = hoy - inicioDeAno;
+        const diaDelAno = Math.floor(dif / (1000 * 60 * 60 * 24));
+        
+        // --- BÚSQUEDA POR ID PERMANENTE ---
+        // Busca la fila cuyo campo 'id' coincida exactamente con el día actual del año
+        devocionalHoyGlobal = devocionales.find(d => parseInt(d.id) === diaDelAno);
+
+        // Si no se encuentra ese ID en la lista, toma el primer devocional disponible
+        if (!devocionalHoyGlobal && devocionales.length > 0) {
+          devocionalHoyGlobal = devocionales[0];
+        }
+
+        actualizarTextoEnPantalla();
+
+      } catch (error) {
+        console.warn('Cargando respuesta de respaldo:', error.message);
+        actualizarTextoEnPantalla();
+      }
+    }
+
+    function actualizarTextoEnPantalla() {
+      const versionClave = document.getElementById('version').value;
+
+      if (devocionalHoyGlobal) {
+        // Carga desde Google Sheets
+        const textoVersion = devocionalHoyGlobal[versionClave] || devocionalHoyGlobal.rvr;
+        document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+        document.getElementById('cita-biblica').innerText = `— ${devocionalHoyGlobal.cita}`;
+        document.getElementById('texto-reflexion').innerText = devocionalHoyGlobal.reflexion;
+      } else {
+        // Carga desde el respaldo local
+        const textoVersion = RESPALDO_LOCAL[versionClave] || RESPALDO_LOCAL.rvr;
+        document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+        document.getElementById('cita-biblica').innerText = `— ${RESPALDO_LOCAL.cita}`;
+        document.getElementById('texto-reflexion').innerText = RESPALDO_LOCAL.reflexion;
+      }
+    }
+
+    // =========================================================
+    // LÓGICA DE REDIRECCIÓN HACIA YOUVERSION
+    // =========================================================
+    const versiculosPorTema = {
+      fe: ["HEB.11.1", "MRK.11.22", "2CO.5.7"],
+      paz: ["JHN.14.27", "PHP.4.7", "ISA.26.3"],
+      esperanza: ["ROM.15.13", "JER.29.11", "PSA.71.5"],
+      sanidad: ["PSA.147.3", "1PE.2.24", "JER.17.14"],
+      consuelo: ["2CO.1.3", "PSA.34.18", "MAT.5.4"],
+      ansiedad: ["PHP.4.6", "1PE.5.7", "PSA.94.19"],
+      gratitud: ["1TH.5.18", "COL.3.15", "PSA.100.4"],
+      amor: ["1CO.13.4", "JHN.3.16", "1JN.4.8"],
+      fortaleza: ["ISA.40.31", "PHP.4.13", "PSA.46.1"]
+    };
+
+    const libros = [
+      { ref: "GEN", caps: 50 }, { ref: "EXO", caps: 40 }, { ref: "PSA", caps: 150 },
+      { ref: "PRO", caps: 31 }, { ref: "ISA", caps: 66 }, { ref: "MAT", caps: 28 },
+      { ref: "MRK", caps: 16 }, { ref: "LUK", caps: 24 }, { ref: "JHN", caps: 21 },
+      { ref: "ACT", caps: 28 }, { ref: "ROM", caps: 16 }, { ref: "REV", caps: 22 }
+    ];
+
+    function obtenerVersionYouVersion() {
+      const clave = document.getElementById('version').value;
+      return MAPEO_YOUVERSION[clave] || "149";
+    }
+
+    function abrirTema(tema) {
+      const verId = obtenerVersionYouVersion();
+      const pasajes = versiculosPorTema[tema];
+      const pasajeAleatorio = pasajes[Math.floor(Math.random() * pasajes.length)];
+      
+      window.open(`https://www.bible.com/es/bible/${verId}/${pasajeAleatorio}`, '_blank');
+    }
+
+    function capituloAleatorio() {
+      const verId = obtenerVersionYouVersion();
+      const libro = libros[Math.floor(Math.random() * libros.length)];
+      const cap = Math.floor(Math.random() * libro.caps) + 1;
+      
+      window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
+    }
+
+    function abrirPlanes() {
+      window.open("https://www.bible.com/es/reading-plans", '_blank');
+    }
+
+    function abrirVideos() {
+      window.open("https://www.bible.com/es/videos", '_blank');
+    }
+
+    function abrirYouVersion() {
+      window.open("https://www.bible.com/es", '_blank');
+    }
+
+    // Modal de Apoyo
+    function abrirModalApoyo() { document.getElementById('modalApoyo').style.display = 'flex'; }
+    function cerrarModalApoyo() { document.getElementById('modalApoyo').style.display = 'none'; }
+    function mostrarQRColombia() { alert("Función para Nequi/Daviplata o enlace local de pago en Colombia."); }
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', cargarDevocionalDelDia);
+  </script>
+
 </body>
 </html>
