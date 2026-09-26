@@ -61,10 +61,11 @@
       <div style="margin-top: 15px;">
         <label>☀️ Versículo y Reflexión del Día:</label>
         <div class="caja-versiculo">
+          <div id="fecha-devocional" style="font-size: 12px; color: #d97706; font-weight: 600; text-align: right; margin-bottom: 2px;"></div>
           <div id="texto-versiculo" class="texto">Cargando versículo...</div>
           <div id="cita-biblica" class="cita"></div>
           <div id="texto-reflexion" class="reflexion"></div>
-        </div>
+         </div>
       </div>
     </div>
 
@@ -147,180 +148,199 @@
   </div>
 
   <script>
-    // =========================================================
-    // ENLACE DEL CSV PUBLICADO EN GOOGLE SHEETS
-    // =========================================================
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdM1leBIfF5O8UToUxYwvwbIYkKY8gNGvfI05yA0AHEZlpj-40wLU_mWIG-4Gzd9rfRrzsATs2Zph0/pub?output=csv';
+  // =========================================================
+  // ENLACE DEL CSV PUBLICADO EN GOOGLE SHEETS
+  // =========================================================
+  const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdM1leBIfF5O8UToUxYwvwbIYkKY8gNGvfI05yA0AHEZlpj-40wLU_mWIG-4Gzd9rfRrzsATs2Zph0/pub?output=csv';
 
-    // Mapeo de claves locales hacia IDs numéricos oficiales de YouVersion
-    const MAPEO_YOUVERSION = {
-      ntv: "127",
-      nvi: "128",
-      rvr: "149",
-      dhh: "148",
-      bhti: "222",
-      tla: "176"
-    };
+  // Mapeo de claves locales hacia IDs numéricos oficiales de YouVersion
+  const MAPEO_YOUVERSION = {
+    ntv: "127",
+    nvi: "128",
+    rvr: "149",
+    dhh: "148",
+    bhti: "222",
+    tla: "176"
+  };
 
-    // Respaldo local por si no hay conexión o falla el enlace de Sheets
-    const RESPALDO_LOCAL = {
-      cita: "Filipenses 4:13",
-      ntv: "Pues todo lo puedo hacer por medio de Cristo, quien me da las fuerzas.",
-      nvi: "Todo lo puedo en Cristo que me da fortaleza.",
-      rvr: "Todo lo puedo en Cristo que me fortalece.",
-      dhh: "A todo puedo hacerle frente, gracias a Cristo que me fortalece.",
-      bhti: "A todo puedo hacerle frente gracias a aquel que me fortalece.",
-      tla: "Cristo me da fuerzas para enfrentarme a toda clase de situaciones.",
-      reflexion: "Confía en que Dios te da las fuerzas necesarias para superar cualquier reto hoy."
-    };
+  // Respaldo local por si no hay conexión o falla el enlace de Sheets
+  const RESPALDO_LOCAL = {
+    fecha: obtenerFechaTextoHoy(),
+    cita: "Filipenses 4:13",
+    ntv: "Pues todo lo puedo hacer por medio de Cristo, quien me da las fuerzas.",
+    nvi: "Todo lo puedo en Cristo que me da fortaleza.",
+    rvr: "Todo lo puedo en Cristo que me fortalece.",
+    dhh: "A todo puedo hacerle frente, gracias a Cristo que me fortalece.",
+    bhti: "A todo puedo hacerle frente gracias a aquel que me fortalece.",
+    tla: "Cristo me da fuerzas para enfrentarme a toda clase de situaciones.",
+    reflexion: "Confía en que Dios te da las fuerzas necesarias para superar cualquier reto hoy."
+  };
 
-    let devocionalHoyGlobal = null;
+  let devocionalHoyGlobal = null;
 
-    function parsearLineaCSV(linea) {
-      const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*)/g;
-      const columnas = [];
-      let match;
-      while ((match = regex.exec(linea)) !== null) {
-        let val = match[1];
-        if (val.startsWith('"') && val.endsWith('"')) {
-          val = val.substring(1, val.length - 1).replace(/""/g, '"');
-        }
-        columnas.push(val.trim());
+  function parsearLineaCSV(linea) {
+    const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*)/g;
+    const columnas = [];
+    let match;
+    while ((match = regex.exec(linea)) !== null) {
+      let val = match[1];
+      if (val.startsWith('"') && val.endsWith('"')) {
+        val = val.substring(1, val.length - 1).replace(/""/g, '"');
       }
-      return columnas;
+      columnas.push(val.trim());
     }
+    return columnas;
+  }
 
-    async function cargarDevocionalDelDia() {
-      try {
-        if (!SHEET_CSV_URL) {
-          throw new Error("URL de Google Sheets no configurada.");
-        }
+  // Obtiene la fecha actual formateada en español (ej. "25 de Septiembre")
+  function obtenerFechaTextoHoy() {
+    const hoy = new Date();
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    return `${hoy.getDate()} de ${meses[hoy.getMonth()]}`;
+  }
 
-        const response = await fetch(SHEET_CSV_URL);
-        const data = await response.text();
+  // Calcula el día exacto del año (1 a 366)
+  function obtenerDiaDelAnoExacto() {
+    const ahora = new Date();
+    const inicio = new Date(ahora.getFullYear(), 0, 0);
+    const dif = (ahora - inicio) + ((inicio.getTimezoneOffset() - ahora.getTimezoneOffset()) * 60 * 1000);
+    return Math.floor(dif / (1000 * 60 * 60 * 24));
+  }
+
+  async function cargarDevocionalDelDia() {
+    try {
+      if (!SHEET_CSV_URL) {
+        throw new Error("URL de Google Sheets no configurada.");
+      }
+
+      const response = await fetch(SHEET_CSV_URL);
+      const data = await response.text();
+      
+      const filas = data.split('\n').filter(f => f.trim() !== '').slice(1);
+      const devocionales = filas.map(fila => {
+        const col = parsearLineaCSV(fila);
         
-        const filas = data.split('\n').filter(f => f.trim() !== '').slice(1);
-        const devocionales = filas.map(fila => {
-          const col = parsearLineaCSV(fila);
-          return {
-            id: col[0] || '',
-            cita: col[1] || '',
-            ntv: col[2] || '',
-            nvi: col[3] || '',
-            rvr: col[4] || '',
-            dhh: col[5] || '',
-            bhti: col[6] || '',
-            tla: col[7] || '',
-            reflexion: col[8] || ''
-          };
-        });
+        return {
+          id: col[0] || '',        // Col 0: ID (Día del año)
+          fecha: col[1] || '',     // Col 1: Fecha en texto
+          cita: col[2] || '',      // Col 2: Cita bíblica
+          ntv: col[3] || '',       // Col 3: NTV
+          nvi: col[4] || '',       // Col 4: NVI
+          rvr: col[5] || '',       // Col 5: RVR1960
+          dhh: col[6] || '',       // Col 6: DHH
+          bhti: col[7] || '',      // Col 7: BHTI
+          tla: col[8] || '',       // Col 8: TLA
+          reflexion: col[9] || ''  // Col 9: Reflexión
+        };
+      });
 
-        if (devocionales.length === 0) throw new Error("Sin datos en la hoja");
+      if (devocionales.length === 0) throw new Error("Sin datos en la hoja");
 
-        // Cálculo del día actual del año (Ej. 244 para el 1 de septiembre)
-        const hoy = new Date();
-        const inicioDeAno = new Date(hoy.getFullYear(), 0, 0);
-        const dif = hoy - inicioDeAno;
-        const diaDelAno = Math.floor(dif / (1000 * 60 * 60 * 24));
-        
-        // --- BÚSQUEDA POR ID PERMANENTE ---
-        // Busca la fila cuyo campo 'id' coincida exactamente con el día actual del año
+      const fechaHoyTexto = obtenerFechaTextoHoy().toLowerCase();
+      const diaDelAno = obtenerDiaDelAnoExacto();
+
+      // 1. Prioridad: Búsqueda por texto de fecha ("25 de septiembre")
+      devocionalHoyGlobal = devocionales.find(d => d.fecha.toLowerCase() === fechaHoyTexto);
+
+      // 2. Segunda opción: Búsqueda por número de día del año
+      if (!devocionalHoyGlobal) {
         devocionalHoyGlobal = devocionales.find(d => parseInt(d.id) === diaDelAno);
-
-        // Si no se encuentra ese ID en la lista, toma el primer devocional disponible
-        if (!devocionalHoyGlobal && devocionales.length > 0) {
-          devocionalHoyGlobal = devocionales[0];
-        }
-
-        actualizarTextoEnPantalla();
-
-      } catch (error) {
-        console.warn('Cargando respuesta de respaldo:', error.message);
-        actualizarTextoEnPantalla();
       }
-    }
 
-    function actualizarTextoEnPantalla() {
-      const versionClave = document.getElementById('version').value;
-
-      if (devocionalHoyGlobal) {
-        // Carga desde Google Sheets
-        const textoVersion = devocionalHoyGlobal[versionClave] || devocionalHoyGlobal.rvr;
-        document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
-        document.getElementById('cita-biblica').innerText = `— ${devocionalHoyGlobal.cita}`;
-        document.getElementById('texto-reflexion').innerText = devocionalHoyGlobal.reflexion;
-      } else {
-        // Carga desde el respaldo local
-        const textoVersion = RESPALDO_LOCAL[versionClave] || RESPALDO_LOCAL.rvr;
-        document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
-        document.getElementById('cita-biblica').innerText = `— ${RESPALDO_LOCAL.cita}`;
-        document.getElementById('texto-reflexion').innerText = RESPALDO_LOCAL.reflexion;
+      // 3. Respaldo: Toma el primer devocional si los anteriores fallan
+      if (!devocionalHoyGlobal && devocionales.length > 0) {
+        devocionalHoyGlobal = devocionales[0];
       }
+
+      actualizarTextoEnPantalla();
+
+    } catch (error) {
+      console.warn('Cargando respuesta de respaldo:', error.message);
+      actualizarTextoEnPantalla();
     }
+  }
 
-    // =========================================================
-    // LÓGICA DE REDIRECCIÓN HACIA YOUVERSION
-    // =========================================================
-    const versiculosPorTema = {
-      fe: ["HEB.11.1", "MRK.11.22", "2CO.5.7"],
-      paz: ["JHN.14.27", "PHP.4.7", "ISA.26.3"],
-      esperanza: ["ROM.15.13", "JER.29.11", "PSA.71.5"],
-      sanidad: ["PSA.147.3", "1PE.2.24", "JER.17.14"],
-      consuelo: ["2CO.1.3", "PSA.34.18", "MAT.5.4"],
-      ansiedad: ["PHP.4.6", "1PE.5.7", "PSA.94.19"],
-      gratitud: ["1TH.5.18", "COL.3.15", "PSA.100.4"],
-      amor: ["1CO.13.4", "JHN.3.16", "1JN.4.8"],
-      fortaleza: ["ISA.40.31", "PHP.4.13", "PSA.46.1"]
-    };
+  function actualizarTextoEnPantalla() {
+    const versionClave = document.getElementById('version').value;
 
-    const libros = [
-      { ref: "GEN", caps: 50 }, { ref: "EXO", caps: 40 }, { ref: "PSA", caps: 150 },
-      { ref: "PRO", caps: 31 }, { ref: "ISA", caps: 66 }, { ref: "MAT", caps: 28 },
-      { ref: "MRK", caps: 16 }, { ref: "LUK", caps: 24 }, { ref: "JHN", caps: 21 },
-      { ref: "ACT", caps: 28 }, { ref: "ROM", caps: 16 }, { ref: "REV", caps: 22 }
-    ];
-
-    function obtenerVersionYouVersion() {
-      const clave = document.getElementById('version').value;
-      return MAPEO_YOUVERSION[clave] || "149";
+    if (devocionalHoyGlobal) {
+      const textoVersion = devocionalHoyGlobal[versionClave] || devocionalHoyGlobal.rvr;
+      document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+      document.getElementById('fecha-devocional').innerText = devocionalHoyGlobal.fecha;
+      document.getElementById('cita-biblica').innerText = `— ${devocionalHoyGlobal.cita}`;
+      document.getElementById('texto-reflexion').innerText = devocionalHoyGlobal.reflexion;
+    } else {
+      const textoVersion = RESPALDO_LOCAL[versionClave] || RESPALDO_LOCAL.rvr;
+      document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+      document.getElementById('fecha-devocional').innerText = RESPALDO_LOCAL.fecha;
+      document.getElementById('cita-biblica').innerText = `— ${RESPALDO_LOCAL.cita}`;
+      document.getElementById('texto-reflexion').innerText = RESPALDO_LOCAL.reflexion;
     }
+  }
 
-    function abrirTema(tema) {
-      const verId = obtenerVersionYouVersion();
-      const pasajes = versiculosPorTema[tema];
-      const pasajeAleatorio = pasajes[Math.floor(Math.random() * pasajes.length)];
-      
-      window.open(`https://www.bible.com/es/bible/${verId}/${pasajeAleatorio}`, '_blank');
-    }
+  // =========================================================
+  // LÓGICA DE REDIRECCIÓN HACIA YOUVERSION
+  // =========================================================
+  const versiculosPorTema = {
+    fe: ["HEB.11.1", "MRK.11.22", "2CO.5.7"],
+    paz: ["JHN.14.27", "PHP.4.7", "ISA.26.3"],
+    esperanza: ["ROM.15.13", "JER.29.11", "PSA.71.5"],
+    sanidad: ["PSA.147.3", "1PE.2.24", "JER.17.14"],
+    consuelo: ["2CO.1.3", "PSA.34.18", "MAT.5.4"],
+    ansiedad: ["PHP.4.6", "1PE.5.7", "PSA.94.19"],
+    gratitud: ["1TH.5.18", "COL.3.15", "PSA.100.4"],
+    amor: ["1CO.13.4", "JHN.3.16", "1JN.4.8"],
+    fortaleza: ["ISA.40.31", "PHP.4.13", "PSA.46.1"]
+  };
 
-    function capituloAleatorio() {
-      const verId = obtenerVersionYouVersion();
-      const libro = libros[Math.floor(Math.random() * libros.length)];
-      const cap = Math.floor(Math.random() * libro.caps) + 1;
-      
-      window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
-    }
+  const libros = [
+    { ref: "GEN", caps: 50 }, { ref: "EXO", caps: 40 }, { ref: "PSA", caps: 150 },
+    { ref: "PRO", caps: 31 }, { ref: "ISA", caps: 66 }, { ref: "MAT", caps: 28 },
+    { ref: "MRK", caps: 16 }, { ref: "LUK", caps: 24 }, { ref: "JHN", caps: 21 },
+    { ref: "ACT", caps: 28 }, { ref: "ROM", caps: 16 }, { ref: "REV", caps: 22 }
+  ];
 
-    function abrirPlanes() {
-      window.open("https://www.bible.com/es/reading-plans", '_blank');
-    }
+  function obtenerVersionYouVersion() {
+    const clave = document.getElementById('version').value;
+    return MAPEO_YOUVERSION[clave] || "149";
+  }
 
-    function abrirVideos() {
-      window.open("https://www.bible.com/es/videos", '_blank');
-    }
+  function abrirTema(tema) {
+    const verId = obtenerVersionYouVersion();
+    const pasajes = versiculosPorTema[tema];
+    const pasajeAleatorio = pasajes[Math.floor(Math.random() * pasajes.length)];
+    
+    window.open(`https://www.bible.com/es/bible/${verId}/${pasajeAleatorio}`, '_blank');
+  }
 
-    function abrirYouVersion() {
-      window.open("https://www.bible.com/es", '_blank');
-    }
+  function capituloAleatorio() {
+    const verId = obtenerVersionYouVersion();
+    const libro = libros[Math.floor(Math.random() * libros.length)];
+    const cap = Math.floor(Math.random() * libro.caps) + 1;
+    
+    window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
+  }
 
-    // Modal de Apoyo
-    function abrirModalApoyo() { document.getElementById('modalApoyo').style.display = 'flex'; }
-    function cerrarModalApoyo() { document.getElementById('modalApoyo').style.display = 'none'; }
-    function mostrarQRColombia() { alert("Función para Nequi/Daviplata o enlace local de pago en Colombia."); }
+  function abrirPlanes() {
+    window.open("https://www.bible.com/es/reading-plans", '_blank');
+  }
 
-    // Inicialización al cargar la página
-    document.addEventListener('DOMContentLoaded', cargarDevocionalDelDia);
-  </script>
+  function abrirVideos() {
+    window.open("https://www.bible.com/es/videos", '_blank');
+  }
+
+  function abrirYouVersion() {
+    window.open("https://www.bible.com/es", '_blank');
+  }
+
+  // Modal de Apoyo
+  function abrirModalApoyo() { document.getElementById('modalApoyo').style.display = 'flex'; }
+  function cerrarModalApoyo() { document.getElementById('modalApoyo').style.display = 'none'; }
+  function mostrarQRColombia() { alert("Función para Nequi/Daviplata o enlace local de pago en Colombia."); }
+
+  // Inicialización al cargar la página
+  document.addEventListener('DOMContentLoaded', cargarDevocionalDelDia);
+</script>
 
 </body>
 </html>
