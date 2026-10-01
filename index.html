@@ -151,7 +151,363 @@
         🖨️ Imprime tu propio llavero (Cults3D)
       </a>
 
-      <a href="https://ko-fi.com/TU_USUARIO" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
+      <a href="https://ko-fi.com/rocast3d" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
+        ☕ Invítanos a un café (€ / USD)
+      </a>
+    </div>
+  </div>
+
+  <script>
+  // =========================================================
+  // ENLACE DEL CSV PUBLICADO EN GOOGLE SHEETS
+  // =========================================================
+  const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdM1leBIfF5O8UToUxYwvwbIYkKY8gNGvfI05yA0AHEZlpj-40wLU_mWIG-4Gzd9rfRrzsATs2Zph0/pub?output=csv';
+
+  // Mapeo de claves locales hacia IDs numéricos oficiales de YouVersion
+  const MAPEO_YOUVERSION = {
+    ntv: "127",
+    nvi: "128",
+    rvr: "149",
+    dhh: "148",
+    bhti: "222",
+    tla: "176"
+  };
+
+  // Respaldo local por si no hay conexión o falla el enlace de Sheets
+  const RESPALDO_LOCAL = {
+    fecha: obtenerFechaTextoHoy(),
+    cita: "Filipenses 4:13",
+    ntv: "Pues todo lo puedo hacer por medio de Cristo, quien me da las fuerzas.",
+    nvi: "Todo lo puedo en Cristo que me da fortaleza.",
+    rvr: "Todo lo puedo en Cristo que me fortalece.",
+    dhh: "A todo puedo hacerle frente, gracias a Cristo que me fortalece.",
+    bhti: "A todo puedo hacerle frente gracias a aquel que me fortalece.",
+    tla: "Cristo me da fuerzas para enfrentarme a toda clase de situaciones.",
+    reflexion: "Confía en que Dios te da las fuerzas necesarias para superar cualquier reto hoy."
+  };
+
+  let devocionalHoyGlobal = null;
+
+  function parsearLineaCSV(linea) {
+    const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*)/g;
+    const columnas = [];
+    let match;
+    while ((match = regex.exec(linea)) !== null) {
+      let val = match[1];
+      if (val.startsWith('"') && val.endsWith('"')) {
+        val = val.substring(1, val.length - 1).replace(/""/g, '"');
+      }
+      columnas.push(val.trim());
+    }
+    return columnas;
+  }
+
+  // Obtiene la fecha actual formateada en español (ej. "25 de Septiembre")
+  function obtenerFechaTextoHoy() {
+    const hoy = new Date();
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    return `${hoy.getDate()} de ${meses[hoy.getMonth()]}`;
+  }
+
+  // Calcula el día exacto del año (1 a 366)
+  function obtenerDiaDelAnoExacto() {
+    const ahora = new Date();
+    const inicio = new Date(ahora.getFullYear(), 0, 0);
+    const dif = (ahora - inicio) + ((inicio.getTimezoneOffset() - ahora.getTimezoneOffset()) * 60 * 1000);
+    return Math.floor(dif / (1000 * 60 * 60 * 24));
+  }
+
+  async function cargarDevocionalDelDia() {
+    try {
+      if (!SHEET_CSV_URL) {
+        throw new Error("URL de Google Sheets no configurada.");
+      }
+
+      const response = await fetch(SHEET_CSV_URL);
+      const data = await response.text();
+      
+      const filas = data.split('\n').filter(f => f.trim() !== '').slice(1);
+      const devocionales = filas.map(fila => {
+        const col = parsearLineaCSV(fila);
+        
+        return {
+          id: col[0] || '',        // Col 0: ID (Día del año)
+          fecha: col[1] || '',     // Col 1: Fecha en texto
+          cita: col[2] || '',      // Col 2: Cita bíblica
+          ntv: col[3] || '',       // Col 3: NTV
+          nvi: col[4] || '',       // Col 4: NVI
+          rvr: col[5] || '',       // Col 5: RVR1960
+          dhh: col[6] || '',       // Col 6: DHH
+          bhti: col[7] || '',      // Col 7: BHTI
+          tla: col[8] || '',       // Col 8: TLA
+          reflexion: col[9] || ''  // Col 9: Reflexión
+        };
+      });
+
+      if (devocionales.length === 0) throw new Error("Sin datos en la hoja");
+
+      const fechaHoyTexto = obtenerFechaTextoHoy().toLowerCase();
+      const diaDelAno = obtenerDiaDelAnoExacto();
+
+      // 1. Prioridad: Búsqueda por texto de fecha ("25 de septiembre")
+      devocionalHoyGlobal = devocionales.find(d => d.fecha.toLowerCase() === fechaHoyTexto);
+
+      // 2. Segunda opción: Búsqueda por número de día del año
+      if (!devocionalHoyGlobal) {
+        devocionalHoyGlobal = devocionales.find(d => parseInt(d.id) === diaDelAno);
+      }
+
+      // 3. Respaldo: Toma el primer devocional si los anteriores fallan
+      if (!devocionalHoyGlobal && devocionales.length > 0) {
+        devocionalHoyGlobal = devocionales[0];
+      }
+
+      actualizarTextoEnPantalla();
+
+    } catch (error) {
+      console.warn('Cargando respuesta de respaldo:', error.message);
+      actualizarTextoEnPantalla();
+    }
+  }
+
+  function actualizarTextoEnPantalla() {
+    const versionClave = document.getElementById('version').value;
+
+    if (devocionalHoyGlobal) {
+      const textoVersion = devocionalHoyGlobal[versionClave] || devocionalHoyGlobal.rvr;
+      document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+      document.getElementById('fecha-devocional').innerText = devocionalHoyGlobal.fecha;
+      document.getElementById('cita-biblica').innerText = `— ${devocionalHoyGlobal.cita}`;
+      document.getElementById('texto-reflexion').innerText = devocionalHoyGlobal.reflexion;
+    } else {
+      const textoVersion = RESPALDO_LOCAL[versionClave] || RESPALDO_LOCAL.rvr;
+      document.getElementById('texto-versiculo').innerText = `"${textoVersion}"`;
+      document.getElementById('fecha-devocional').innerText = RESPALDO_LOCAL.fecha;
+      document.getElementById('cita-biblica').innerText = `— ${RESPALDO_LOCAL.cita}`;
+      document.getElementById('texto-reflexion').innerText = RESPALDO_LOCAL.reflexion;
+    }
+  }
+
+  // =========================================================
+  // LÓGICA DE REDIRECCIÓN HACIA YOUVERSION
+  // =========================================================
+  const versiculosPorTema = {
+    fe: ["HEB.11.1", "MRK.11.22", "2CO.5.7"],
+    paz: ["JHN.14.27", "PHP.4.7", "ISA.26.3"],
+    esperanza: ["ROM.15.13", "JER.29.11", "PSA.71.5"],
+    sanidad: ["PSA.147.3", "1PE.2.24", "JER.17.14"],
+    consuelo: ["2CO.1.3", "PSA.34.18", "MAT.5.4"],
+    ansiedad: ["PHP.4.6", "1PE.5.7", "PSA.94.19"],
+    gratitud: ["1TH.5.18", "COL.3.15", "PSA.100.4"],
+    amor: ["1CO.13.4", "JHN.3.16", "1JN.4.8"],
+    fortaleza: ["ISA.40.31", "PHP.4.13", "PSA.46.1"]
+  };
+
+  const libros = [
+    { ref: "GEN", caps: 50 }, { ref: "EXO", caps: 40 }, { ref: "PSA", caps: 150 },
+    { ref: "PRO", caps: 31 }, { ref: "ISA", caps: 66 }, { ref: "MAT", caps: 28 },
+    { ref: "MRK", caps: 16 }, { ref: "LUK", caps: 24 }, { ref: "JHN", caps: 21 },
+    { ref: "ACT", caps: 28 }, { ref: "ROM", caps: 16 }, { ref: "REV", caps: 22 }
+  ];
+
+  function obtenerVersionYouVersion() {
+    const clave = document.getElementById('version').value;
+    return MAPEO_YOUVERSION[clave] || "149";
+  }
+
+  function abrirTema(tema) {
+    const verId = obtenerVersionYouVersion();
+    const pasajes = versiculosPorTema[tema];
+    const pasajeAleatorio = pasajes[Math.floor(Math.random() * pasajes.length)];
+    
+    window.open(`https://www.bible.com/es/bible/${verId}/${pasajeAleatorio}`, '_blank');
+  }
+
+  function capituloAleatorio() {
+    const verId = obtenerVersionYouVersion();
+    const libro = libros[Math.floor(Math.random() * libros.length)];
+    const cap = Math.floor(Math.random() * libro.caps) + 1;
+    
+    window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
+  }
+
+  function abrirPlanes() {
+    // Redirección directa compatible con iOS/Safari y Android
+    window.location.href = "https://www.bible.com/es/reading-plans";
+  }
+    
+  function abrirVideos() {
+    // Redirección directa compatible con iOS/Safari y Android
+    window.location.href = "https://www.bible.com/es/videos";
+  }
+
+  function abrirYouVersion() {
+    window.open("https://www.bible.com/es", '_blank');
+  }
+
+  // Control del Modal de Apoyo
+  function abrirModalApoyo() { document.getElementById('modalApoyo').style.display = 'flex'; }
+  function cerrarModalApoyo() { document.getElementById('modalApoyo').style.display = 'none'; }
+
+  // Inicialización al cargar la página
+  document.addEventListener('DOMContentLoaded', cargarDevocionalDelDia);
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICHTHYS - Llavero Bíblico</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #f1f5f9; color: #1e293b; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    .card { background: white; padding: 24px; border-radius: 20px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
+    .logo { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: 2px; }
+    .sub { color: #64748b; font-size: 14px; margin-bottom: 20px; }
+    
+    .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+    label { font-size: 14px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
+    select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 15px; background: white; cursor: pointer; }
+    
+    /* CAJA DEL DEVOCIONAL / VERSÍCULO DEL DÍA */
+    .caja-versiculo { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; border-radius: 0 8px 8px 0; margin-top: 5px; }
+    .texto { font-style: italic; font-size: 15px; color: #334155; margin-bottom: 8px; line-height: 1.4; }
+    .cita { font-weight: bold; text-align: right; color: #1e293b; font-size: 13px; margin-bottom: 8px; }
+    .reflexion { font-size: 13.5px; color: #475569; border-top: 1px dashed #fcd34d; padding-top: 8px; line-height: 1.35; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .temas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    
+    .btn { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none; display: block; text-align: center; font-size: 14px; }
+    .btn-green { background: #16a34a; }
+    .btn-purple { background: #9333ea; }
+    .btn-orange { background: #ea580c; }
+    .btn-yv { background: #1e293b; color: #f8fafc; font-size: 13px; margin-top: 10px; border: 1px solid #334155; }
+    .btn-tema { background: #8b5cf6; padding: 10px 5px; font-size: 13px; }
+    .btn:active { transform: scale(0.98); }
+
+    /* SECCIÓN DE CRÉDITOS */
+    .footer-credits { margin-top: 20px; font-size: 11px; color: #94a3b8; line-height: 1.4; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 15px; }
+    .footer-credits a { color: #64748b; text-decoration: underline; }
+
+    /* ESTILOS DEL FOOTER GLOBAL */
+    footer { width: 100%; max-width: 450px; border-radius: 16px; margin-top: 25px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">ICHTHYS</div>
+    <div class="sub">Llavero Bíblico Inteligente</div>
+
+    <!-- CONFIGURACIÓN DE VERSIÓN Y VERSÍCULO EN PANTALLA -->
+    <div class="box">
+      <label for="version">1. Selecciona tu Versión:</label>
+      <select id="version" onchange="actualizarTextoEnPantalla()">
+         <option value="ntv">NTV - Nueva Traducción Viviente</option>
+         <option value="nvi">NVI - Nueva Versión Internacional</option>
+         <option value="rvr" selected>RVR1960 - Reina Valera 1960</option>
+         <option value="dhh">DHH - Dios Habla Hoy (Católica)</option>
+         <option value="bhti">BHTI - Biblia Hispanoamericana (Católica)</option>
+         <option value="tla">TLA - Traducción en Lenguaje Actual</option>
+      </select>
+
+      <div style="margin-top: 15px;">
+        <label>☀️ Versículo y Reflexión del Día:</label>
+        <div class="caja-versiculo">
+          <div id="fecha-devocional" style="font-size: 12px; color: #d97706; font-weight: 600; text-align: right; margin-bottom: 2px;"></div>
+          <div id="texto-versiculo" class="texto">Cargando versículo...</div>
+          <div id="cita-biblica" class="cita"></div>
+          <div id="texto-reflexion" class="reflexion"></div>
+         </div>
+      </div>
+    </div>
+
+    <!-- VERSÍCULOS POR TEMA -->
+    <div class="box">
+      <label>2. Explora por Tema:</label>
+      <div class="temas-grid">
+        <button class="btn btn-tema" onclick="abrirTema('fe')">Fe</button>
+        <button class="btn btn-tema" onclick="abrirTema('paz')">Paz</button>
+        <button class="btn btn-tema" onclick="abrirTema('esperanza')">Esperanza</button>
+        <button class="btn btn-tema" onclick="abrirTema('sanidad')">Sanidad</button>
+        <button class="btn btn-tema" onclick="abrirTema('consuelo')">Consuelo</button>
+        <button class="btn btn-tema" onclick="abrirTema('ansiedad')">Ansiedad</button>
+        <button class="btn btn-tema" onclick="abrirTema('gratitud')">Gratitud</button>
+        <button class="btn btn-tema" onclick="abrirTema('amor')">Amor</button>
+        <button class="btn btn-tema" onclick="abrirTema('fortaleza')">Fortaleza</button>
+      </div>
+    </div>
+
+    <!-- NAVEGACIÓN EN YOUVERSION -->
+    <div class="box">
+      <label>3. Explorar en YouVersion:</label>
+      
+      <button class="btn btn-green" onclick="capituloAleatorio()" style="width: 100%; margin-bottom: 10px;">
+        📖 Capítulo Aleatorio
+      </button>
+
+      <div class="grid">
+        <button class="btn btn-purple" onclick="abrirPlanes()">
+          📋 Planes
+        </button>
+        <button class="btn btn-orange" onclick="abrirVideos()">
+          🎬 Videos
+        </button>
+      </div>
+
+      <!-- BOTÓN DIRECTO A YOUVERSION -->
+      <button class="btn btn-yv" onclick="abrirYouVersion()" style="width: 100%;">
+        📱 Abrir la App / Web de YouVersion
+      </button>
+    </div>
+
+    <!-- PIE DE PÁGINA / DERECHOS -->
+    <div class="footer-credits">
+      Contenidos y textos bíblicos facilitados mediante enlace a <a href="https://www.bible.com" target="_blank" rel="noopener">YouVersion (Bible.com)</a>.<br>
+      Todos los derechos del texto bíblico pertenecen a sus respectivas sociedades bíblicas y editoriales.
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA LIMPIO CON MODAL DE APOYO -->
+  <footer style="text-align: center; padding: 20px 15px; background: #ffffff; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+    <p style="color: #666; font-size: 0.9em; margin-bottom: 12px; margin-top: 0;">
+      Este proyecto es de código abierto y sin fines de lucro.
+    </p>
+    <button onclick="abrirModalApoyo()" style="background-color: #2b2b2b; color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 14px;">
+      🤝 Apóyanos
+    </button>
+  </footer>
+
+  <!-- VENTANA MODAL DE APOYO CON INTEGRACIÓN BRE-B Y CULTS3D -->
+  <div id="modalApoyo" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index: 1000;">
+    <div style="background:#fff; padding:25px; border-radius:15px; max-width:340px; width:90%; text-align:center; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;">
+      <span onclick="cerrarModalApoyo()" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:1.2em; font-weight:bold; color: #64748b;">✕</span>
+      
+      <h3 style="margin-top:0; color:#1e293b; font-size: 18px;">Elige cómo colaborar</h3>
+      <p style="font-size:0.85em; color:#555; margin-bottom: 15px;">Tu ayuda mantiene vivo y libre este proyecto.</p>
+
+      <!-- SECCIÓN COLOMBIA (BRE-B) -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px;">
+        <span style="font-weight:bold; color:#16a34a; font-size:13px; display:block; margin-bottom:4px;">🇨🇴 Desde Colombia (Bre-B)</span>
+        <p style="font-size:11px; color:#64748b; margin:0 0 8px 0;">Escanea el QR o usa nuestra llave en cualquier banco:</p>
+        
+        <!-- Muestra la imagen alojada en la carpeta assets/ -->
+        <img src="assets/qr-breb.png" alt="QR Bre-B Donaciones" style="width:160px; height:160px; margin:0 auto 8px auto; display:block; border-radius:8px;" />
+        
+        <div style="background:#fff; padding:6px; border-radius:6px; border:1px dashed #cbd5e1; font-size:12px; font-weight:bold; color:#1e293b;">
+          Llave: <span style="color:#2563eb;">@bbvajrn743</span>
+        </div>
+      </div>
+
+      <!-- SECCIÓN INTERNACIONAL & CULTS3D -->
+      <a href="https://cults3d.com/es/usuarios/TU_USUARIO" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#8A2BE2; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
+        🖨️ Imprime tu propio llavero (Cults3D)
+      </a>
+
+      <a href="https://ko-fi.com/rocast3d" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
         ☕ Invítanos a un café (€ / USD)
       </a>
     </div>
