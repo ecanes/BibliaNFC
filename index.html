@@ -321,39 +321,16 @@
     window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
   }
 
- // function abrirPlanes() {
- //   window.open("https://www.bible.com/es/reading-plans", '_blank');
-  //}
-
-    function abrirPlanes() {
-    // Intenta abrir la sección de planes usando el esquema o URL compatible
-    const esMovel = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (esMovel) {
-      window.location.href = "youversion://plans";
-      // Si la app no responde tras un momento, abre la versión web como respaldo
-      setTimeout(() => {
-        window.open("https://www.bible.com/es/reading-plans", '_blank');
-      }, 1200);
-    } else {
-      window.open("https://www.bible.com/es/reading-plans", '_blank');
-    }
+ function abrirPlanes() {
+    // Abre en la app si está instalada; si no, abre la web de Planes sin bloqueo de emergentes
+    window.location.href = "https://www.bible.com/es/reading-plans";
   }
-
-  function abrirVideos() {
-    const esMovel = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (esMovel) {
-      window.location.href = "youversion://videos";
-      setTimeout(() => {
-        window.open("https://www.bible.com/es/videos", '_blank');
-      }, 1200);
-    } else {
-      window.open("https://www.bible.com/es/videos", '_blank');
-    }
+    
+function abrirVideos() {
+    // Abre en la app si está instalada; si no, abre la web de Videos sin bloqueo de emergentes
+    window.location.href = "https://www.bible.com/es/videos";
   }
-
- // function abrirVideos() {
-  //  window.open("https://www.bible.com/es/videos", '_blank');
-  //}
+ 
 
   function abrirYouVersion() {
     window.open("https://www.bible.com/es", '_blank');
