@@ -125,25 +125,35 @@
     </button>
   </footer>
 
-  <!-- VENTANA MODAL DE APOYO -->
+  <!-- VENTANA MODAL DE APOYO CON INTEGRACIÓN BRE-B Y CULTS3D -->
   <div id="modalApoyo" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index: 1000;">
-    <div style="background:#fff; padding:25px; border-radius:15px; max-width:320px; width:90%; text-align:center; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+    <div style="background:#fff; padding:25px; border-radius:15px; max-width:340px; width:90%; text-align:center; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;">
       <span onclick="cerrarModalApoyo()" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:1.2em; font-weight:bold; color: #64748b;">✕</span>
       
-      <h3 style="margin-top:0; color:#1e293b;">Elige cómo colaborar</h3>
+      <h3 style="margin-top:0; color:#1e293b; font-size: 18px;">Elige cómo colaborar</h3>
       <p style="font-size:0.85em; color:#555; margin-bottom: 15px;">Tu ayuda mantiene vivo y libre este proyecto.</p>
 
-      <a href="https://ko-fi.com/TU_USUARIO" target="_blank" style="display:block; margin:10px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">
-        ☕ Invítanos a un café (€ / USD)
-      </a>
+      <!-- SECCIÓN COLOMBIA (BRE-B) -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px;">
+        <span style="font-weight:bold; color:#16a34a; font-size:13px; display:block; margin-bottom:4px;">🇨🇴 Desde Colombia (Bre-B)</span>
+        <p style="font-size:11px; color:#64748b; margin:0 0 8px 0;">Escanea el QR o usa nuestra llave en cualquier banco:</p>
+        
+        <!-- Muestra la imagen alojada en la carpeta assets/ -->
+        <img src="assets/qr-breb.png" alt="QR Bre-B Donaciones" style="width:160px; height:160px; margin:0 auto 8px auto; display:block; border-radius:8px;" />
+        
+        <div style="background:#fff; padding:6px; border-radius:6px; border:1px dashed #cbd5e1; font-size:12px; font-weight:bold; color:#1e293b;">
+          Llave: <span style="color:#2563eb;">@bbvajrn743</span>
+        </div>
+      </div>
 
-      <a href="https://cults3d.com/es/usuarios/TU_USUARIO" target="_blank" style="display:block; margin:10px 0; padding:10px; background:#8A2BE2; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">
+      <!-- SECCIÓN INTERNACIONAL & CULTS3D -->
+      <a href="https://cults3d.com/es/usuarios/TU_USUARIO" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#8A2BE2; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
         🖨️ Imprime tu propio llavero (Cults3D)
       </a>
 
-      <button onclick="mostrarQRColombia()" style="width:100%; margin:10px 0; padding:10px; background:#00C853; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;">
-        🇨🇴 Apoyar desde Colombia (COP)
-      </button>
+      <a href="https://ko-fi.com/TU_USUARIO" target="_blank" rel="noopener" style="display:block; margin:8px 0; padding:10px; background:#FF5E5B; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px;">
+        ☕ Invítanos a un café (€ / USD)
+      </a>
     </div>
   </div>
 
@@ -321,25 +331,23 @@
     window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
   }
 
- function abrirPlanes() {
-    // Abre en la app si está instalada; si no, abre la web de Planes sin bloqueo de emergentes
+  function abrirPlanes() {
+    // Redirección directa compatible con iOS/Safari y Android
     window.location.href = "https://www.bible.com/es/reading-plans";
   }
     
-function abrirVideos() {
-    // Abre en la app si está instalada; si no, abre la web de Videos sin bloqueo de emergentes
+  function abrirVideos() {
+    // Redirección directa compatible con iOS/Safari y Android
     window.location.href = "https://www.bible.com/es/videos";
   }
- 
 
   function abrirYouVersion() {
     window.open("https://www.bible.com/es", '_blank');
   }
 
-  // Modal de Apoyo
+  // Control del Modal de Apoyo
   function abrirModalApoyo() { document.getElementById('modalApoyo').style.display = 'flex'; }
   function cerrarModalApoyo() { document.getElementById('modalApoyo').style.display = 'none'; }
-  function mostrarQRColombia() { alert("Función para Nequi/Daviplata o enlace local de pago en Colombia."); }
 
   // Inicialización al cargar la página
   document.addEventListener('DOMContentLoaded', cargarDevocionalDelDia);
