@@ -357,15 +357,31 @@
     window.open(`https://www.bible.com/es/bible/${verId}/${libro.ref}.${cap}`, '_blank');
   }
 
-  function abrirPlanes() {
-    // Redirección directa compatible con iOS/Safari y Android
+ function abrirPlanes() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const esAndroid = /Android/i.test(userAgent);
+
+  if (esAndroid) {
+    // Intent específico para Android: intenta abrir la app en Planes y si no, va a la web
+    window.location.href = "intent://reading-plans#Intent;scheme=https;package=com.sirma.mobile.bible.android;S.browser_fallback_url=https%3A%2F%2Fwww.bible.com%2Fes%2Freading-plans;end";
+  } else {
+    // iOS (iPhone/iPad) y escritorio: Redirección estándar HTTPS (Universal Link)
     window.location.href = "https://www.bible.com/es/reading-plans";
   }
-    
-  function abrirVideos() {
-    // Redirección directa compatible con iOS/Safari y Android
+}
+
+function abrirVideos() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const esAndroid = /Android/i.test(userAgent);
+
+  if (esAndroid) {
+    // Intent específico para Android: intenta abrir la app en Videos y si no, va a la web
+    window.location.href = "intent://videos#Intent;scheme=https;package=com.sirma.mobile.bible.android;S.browser_fallback_url=https%3A%2F%2Fwww.bible.com%2Fes%2Fvideos;end";
+  } else {
+    // iOS (iPhone/iPad) y escritorio: Redirección estándar HTTPS (Universal Link)
     window.location.href = "https://www.bible.com/es/videos";
   }
+}
 
   function abrirYouVersion() {
     window.open("https://www.bible.com/es", '_blank');
